@@ -1,0 +1,48 @@
+---
+- name: Install firewalld
+  package:
+    name: firewalld
+    state: latest
+
+- name: Start+Enable firewalld
+  systemd:
+    name: firewalld
+    state: started
+    enabled: yes
+
+- name: Install bind9
+  package:
+    name: bind9
+    state: latest
+
+- name: create named config file
+  template:
+    src: named.conf.j2
+    dest: /etc/bind/named.conf
+    owner: root
+    group: bind
+    mode: 0644
+
+- name: restart+makeshureenabled bind9
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    enabled: yes
+    name: named
+
+- name: Allow 53/udp
+  firewalld:
+    port: 53/udp
+    permanent: true
+    state: enabled
+
+- name: Allow 53/tcp
+  firewalld:
+    port: 53/tcp
+    permanent: true
+    state: enabled
+
+- name: reload firewalld
+  systemd:
+    name: firewalld
+    state: reloaded
