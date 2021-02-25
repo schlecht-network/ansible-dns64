@@ -1,7 +1,8 @@
 ---
 - name: Install firewalld
-  package:
+  apt:
     name: firewalld
+    update_cache: yes
     state: latest
 
 - name: Start+Enable firewalld
@@ -11,8 +12,9 @@
     enabled: yes
 
 - name: Install bind9
-  package:
+  apt:
     name: bind9
+    update_cache: yes
     state: latest
 
 - name: create named config file
